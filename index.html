@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OIV Package Creator for GTA V</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-cube"></i> OIV Package Creator</h1>
+            <p>OpenIV Package (.oiv) を簡単に作成できるツール</p>
+        </header>
+
+        <div class="main-content">
+            <!-- 基本情報セクション -->
+            <section class="section" id="metadata-section">
+                <h2><i class="fas fa-info-circle"></i> 基本情報</h2>
+                <div class="form-group">
+                    <label>パッケージ名 <span class="required">*</span></label>
+                    <input type="text" id="package-name" placeholder="例: LEXUS LC500 Addon">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>バージョン <span class="required">*</span></label>
+                        <div class="version-inputs">
+                            <input type="number" id="version-major" placeholder="1" min="0" value="1">
+                            <span>.</span>
+                            <input type="number" id="version-minor" placeholder="0" min="0" value="0">
+                            <input type="text" id="version-tag" placeholder="beta (optional)">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>ターゲット <span class="required">*</span></label>
+                        <select id="target-game">
+                            <option value="Five">GTA V</option>
+                            <option value="IV">GTA IV</option>
+                            <option value="Payne">Max Payne 3</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>作者名 <span class="required">*</span></label>
+                        <input type="text" id="author-name" placeholder="あなたの名前">
+                    </div>
+                    <div class="form-group">
+                        <label>作者リンク</label>
+                        <input type="url" id="author-link" placeholder="https://example.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>説明</label>
+                    <textarea id="description" rows="3" placeholder="MODの説明を入力（HTMLタグ使用可）"></textarea>
+                    <label>説明フッターリンク（オプション）</label>
+                    <input type="url" id="description-footer-link" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label>ライセンス</label>
+                    <textarea id="licence" rows="2" placeholder="ライセンス情報（オプション）"></textarea>
+                    <label>ライセンスフッターリンク（オプション）</label>
+                    <input type="url" id="licence-footer-link" placeholder="https://example.com">
+                </div>
+                <div class="form-group">
+                    <label>WebサイトURL</label>
+                    <input type="url" id="web-url" placeholder="https://mod-homepage.com">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ヘッダー背景色</label>
+                        <input type="color" id="header-bg" value="#23366A">
+                        <label class="checkbox">
+                            <input type="checkbox" id="use-black-text">
+                            黒文字を使用
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label>アイコン背景色</label>
+                        <input type="color" id="icon-bg" value="#3b5998">
+                    </div>
+                </div>
+            </section>
+
+            <!-- コンテンツ操作セクション -->
+            <section class="section" id="content-section">
+                <h2><i class="fas fa-folder-open"></i> コンテンツ操作</h2>
+                
+                <div class="template-selector">
+                    <label>テンプレート:</label>
+                    <select id="template-select">
+                        <option value="">カスタム</option>
+                        <option value="vehicle-addon">車両アドオン</option>
+                        <option value="vehicle-replace">車両リプレイス</option>
+                        <option value="script">スクリプトMOD</option>
+                        <option value="texture">テクスチャMOD</option>
+                    </select>
+                    <button class="btn btn-secondary" onclick="applyTemplate()">
+                        <i class="fas fa-magic"></i> テンプレート適用
+                    </button>
+                </div>
+
+                <div class="operations-container" id="operations-container">
+                    <!-- 動的に操作が追加される -->
+                </div>
+
+                <div class="add-operation-buttons">
+                    <button class="btn btn-primary" onclick="addOperation('file')">
+                        <i class="fas fa-file"></i> ファイル操作
+                    </button>
+                    <button class="btn btn-primary" onclick="addOperation('archive')">
+                        <i class="fas fa-archive"></i> アーカイブ操作
+                    </button>
+                    <button class="btn btn-primary" onclick="addOperation('text')">
+                        <i class="fas fa-file-alt"></i> テキスト編集
+                    </button>
+                    <button class="btn btn-primary" onclick="addOperation('xml')">
+                        <i class="fas fa-code"></i> XML編集
+                    </button>
+                </div>
+            </section>
+
+            <!-- ファイル管理セクション -->
+            <section class="section" id="files-section">
+                <h2><i class="fas fa-folder-tree"></i> ファイル管理</h2>
+                <div class="file-drop-zone" id="file-drop-zone">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>ここにファイルをドラッグ＆ドロップ</p>
+                    <p>または</p>
+                    <input type="file" id="file-input" multiple style="display: none;">
+                    <button class="btn btn-secondary" onclick="document.getElementById('file-input').click()">
+                        ファイルを選択
+                    </button>
+                </div>
+                <div class="file-list" id="file-list">
+                    <!-- アップロードされたファイルのリスト -->
+                </div>
+            </section>
+
+            <!-- プレビューセクション -->
+            <section class="section" id="preview-section">
+                <h2><i class="fas fa-eye"></i> assembly.xml プレビュー</h2>
+                <pre id="xml-preview"><code>ここにXMLプレビューが表示されます</code></pre>
+                <button class="btn btn-secondary" onclick="copyXML()">
+                    <i class="fas fa-copy"></i> XMLをコピー
+                </button>
+            </section>
+
+            <!-- 生成ボタン -->
+            <div class="generate-section">
+                <button class="btn btn-success btn-large" onclick="generateOIV()">
+                    <i class="fas fa-download"></i> OIVファイルを生成
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作追加モーダル -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modal-body">
+                <!-- 動的にコンテンツが挿入される -->
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
